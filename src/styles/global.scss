@@ -1,0 +1,189 @@
+@import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700&display=swap');
+
+
+/* globals.css */
+
+/* 1. Reset styles */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* 2. Set root font-size (rem-based) */
+:root {
+    font-size: 16px;
+    /* 1rem = 16px */
+    --font-work-sans: 'Work Sans', sans-serif;
+
+    /* 🎨 Design tokens (nên dùng nếu có theme) */
+    --color-primary: #0d6efd;
+    //   --color-text: #212529;
+    --color-text: #121f38;
+    --color-bg: #ffffff;
+    --border-radius: 0.5rem;
+}
+
+/* 3. Body default styles */
+body {
+    font-family: var(--font-work-sans);
+    color: var(--color-text);
+    background-color: var(--color-bg);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* 4. Headings */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-weight: 500;
+    line-height: 1.25;
+}
+
+/* 5. Links */
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* 6. Images */
+img {
+    max-width: 100%;
+    display: block;
+}
+
+/* 7. Buttons */
+button {
+    font-family: inherit;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+/* 8. Utility classes (nếu cần) */
+.text-center {
+    text-align: center;
+}
+
+.container {
+    max-width: 1200px;
+    margin-inline: auto;
+    padding-inline: 1rem;
+}
+
+
+//scroll to top
+.scrollToTop {
+    position: fixed;
+    // right: 20px;
+    // bottom: 30%;
+
+    bottom: 2rem;
+    right: 2rem;
+    width: 60px;
+    height: 60px;
+    background-color: #9a563a;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    font-size: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    z-index: 999;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    transform: scale(0.9);
+    border: 6px solid #ffffff;
+    transition: all 0.3s ease;
+}
+
+.scrollToTop:hover {
+    background-color: #121f38;
+}
+
+.scrollToTop.show {
+    opacity: 1;
+    pointer-events: auto;
+    transform: scale(1);
+}
+
+
+
+
+// html,
+// body {
+//     overflow: hidden !important;
+//     height: 100% !important;
+
+//     .c-scrollbar_thumb {
+//         opacity: 1;
+//         background-color: #9a563a;
+//     }
+// }
+
+
+
+
+//đổi màu thanh cuộn
+/* globals.css hoặc layout.module.css */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f0f0f0;
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+    // background: linear-gradient(45deg, #6a11cb, #2575fc);
+    background: #9a563a;
+    // border-radius: 5px;
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    // background: linear-gradient(45deg, #5c0ed6, #1c63e0);
+    // opacity: 0.5;
+    cursor: pointer;
+}
+
+/* globals.css */
+
+// html {
+//     scroll-behavior: smooth;
+//     scrollbar-width: thin;
+//     scrollbar-color: #6a11cb #f0f0f0;
+// }
+
+// body::-webkit-scrollbar {
+//     width: 10px;
+// }
+
+// body::-webkit-scrollbar-track {
+//     background: #f0f0f0;
+// }
+
+// body::-webkit-scrollbar-thumb {
+//     background: linear-gradient(45deg, #6a11cb, #2575fc);
+//     border-radius: 10px;
+//     box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+// }
+
+// body::-webkit-scrollbar-thumb:hover {
+//     background: linear-gradient(45deg, #5c0ed6, #1c63e0);
+// }

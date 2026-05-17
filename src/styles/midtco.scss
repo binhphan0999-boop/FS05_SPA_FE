@@ -1,0 +1,223 @@
+.mid-take-care-of {
+    background-image: url("/images/image_38.jpg");
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    opacity: 1;
+    // margin-top: 30px;
+    box-sizing: border-box;
+    padding: 0px 20px 0 20px;
+
+    .div-b-image {
+        display: flex;
+
+        .image-c {
+            margin-top: 100px;
+            display: flex;
+            align-items: end;
+        }
+
+        .container-t-c-o {
+            margin-top: 30px;
+            padding-bottom: 20px;
+
+            .title {
+                display: block;
+
+                span {
+                    color: #9a563a;
+                    letter-spacing: 3.52px;
+                    text-transform: uppercase;
+                    font-weight: 500;
+                }
+
+                h2 {
+                    font-size: 48px;
+                    margin-top: 10px;
+                    margin-bottom: 10px;
+                }
+            }
+
+            .content {
+                display: flex;
+                max-width: 840px;
+
+                .tco-table {
+                    width: 50%;
+                    margin: 10px;
+                    background-color: #FFFFFF;
+                    padding: 15px;
+                    border-radius: 8px;
+
+                }
+
+                .table-1 {
+                    background-color: #FFFFFF;
+                    border-radius: 8px;
+
+                    .table-title {
+                        display: block;
+                        text-align: center;
+                        margin-bottom: 30px;
+
+                        span {
+                            font-size: 12px;
+                            line-height: 12px;
+                            font-style: italic;
+                            letter-spacing: 2px;
+                            color: #9a563a;
+                        }
+
+                        h2 {
+                            font-size: 24px;
+                            font-weight: 600;
+                            text-transform: uppercase;
+                        }
+
+                        .div-img {
+                            display: flex;
+                            justify-content: center;
+                            text-align: center;
+                            padding-top: 15px;
+                            // text-align: center;
+                        }
+                    }
+
+                    .table-c {
+                        ul {
+                            li {
+                                margin-bottom: 10px;
+
+                                .c-price {
+                                    font-family: "Roboto", sans-serif !important;
+                                    display: flex;
+                                    color: #000000;
+                                    font-size: 16px;
+                                    font-weight: 500;
+                                    align-items: center;
+                                    flex-basis: 100%;
+                                    justify-content: space-between;
+
+                                    .c {
+                                        max-width: 80%;
+                                        color: #000000;
+                                        font-size: 16px;
+                                        font-weight: 600;
+                                    }
+
+                                    .p {
+                                        border-bottom-style: dotted;
+                                        border-bottom-width: 2px;
+                                        border-bottom-color: #000000;
+                                        flex-grow: 1;
+                                        height: 0;
+                                        margin-left: 10px;
+                                        margin-right: 10px;
+                                    }
+
+                                    .price {
+                                        color: #9a563a;
+                                        font-size: 16px;
+                                        font-weight: 500;
+
+                                    }
+                                }
+
+                                p {
+                                    color: #7A7A7A;
+                                    font-family: "Roboto", sans-serif;
+                                    font-size: 12px;
+                                    font-style: italic;
+                                    font-weight: 400;
+                                    flex-basis: 100%;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media (max-width: 1024px) {
+    .mid-take-care-of {
+        .title {
+            text-align: center;
+        }
+
+        .div-b-image {
+            display: block;
+            // text-align: center;
+
+            .image-c {
+                display: flex;
+                justify-content: center;
+                padding-top: 20px;
+            }
+
+            .content {
+                display: flex;
+                justify-content: center;
+            }
+        }
+    }
+}
+
+@media (max-width: 768px) {
+    .mid-take-care-of {
+
+        .title {
+            text-align: center;
+        }
+
+        .tco-table {
+            width: 400px !important;
+        }
+
+        .container-content {
+            display: flex;
+            justify-content: center;
+        }
+
+        .content {
+            display: block !important;
+            max-width: 420px !important;
+
+            .tco-table {
+                display: flex !important;
+                justify-content: center;
+            }
+
+            .table-1 {
+                width: 405px;
+            }
+        }
+    }
+}
+
+@media (max-width: 500px) {
+    .mid-take-care-of {
+        .image-c {
+            margin-top: 0px !important;
+        }
+
+        .content {
+            display: block !important;
+            max-width: 95vw !important;
+
+            .tco-table {
+                width: 90vw !important;
+            }
+
+            .tco-table {
+                display: flex !important;
+                justify-content: center;
+            }
+
+            .table-1 {
+                width: 95vw;
+            }
+        }
+    }
+}

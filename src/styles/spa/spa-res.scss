@@ -1,0 +1,119 @@
+// // Mobile default
+// .card {
+//     padding: 1rem;
+//     font-size: 14px;
+//   }
+
+//   // Tablet trở lên
+//   @media (min-width: 768px) {
+//     .card {
+//       padding: 2rem;
+//       font-size: 16px;
+//     }
+//   }
+
+//   // Desktop trở lên
+//   @media (min-width: 1024px) {
+//     .card {
+//       font-size: 18px;
+//     }
+//   }
+
+
+// desktop-first
+
+/* Tablet nhỏ và dưới */
+@media (max-width: 1024px) {
+    .carousel-container {
+        .content {
+            h1 {
+                font-size: 55px !important;
+                line-height: 65px !important;
+            }
+
+            p {
+                display: none;
+            }
+
+            span {
+                margin-bottom: 5px !important;
+            }
+
+            .btn {
+                margin-top: 15px;
+            }
+        }
+    }
+}
+
+/* Tablet đứng */
+@media (max-width: 768px) {
+    .carousel-container {
+        .content {
+            h1 {
+                font-size: 35px !important;
+                line-height: 40px !important;
+            }
+
+            p {
+                display: none;
+            }
+
+            span {
+                margin-bottom: 5px !important;
+            }
+
+            .btn {
+                margin-top: 15px;
+            }
+        }
+    }
+}
+
+/* Mobile nhỏ */
+@media (max-width: 500px) {
+    .carousel-container {
+        .content {
+            left: 5vw !important;
+            h1 {
+                font-size: 25px !important;
+                line-height: 30px !important;
+            }
+
+            p {
+                display: none;
+            }
+
+            .carousel-label-m {
+                display: none;
+            }
+
+            .btn {
+                margin-top: 15px;
+                padding-top: 10px;
+                padding-bottom: 10px;
+                padding-left: 10px;
+                padding-right: 5px;
+
+                .icon-right {
+                    background-color: #fff;
+                    padding: 0;
+
+                    i {
+                        color: #9a563a;
+                    }
+                }
+            }
+
+
+        }
+
+        .swiper-button-next {
+            display: none;
+        }
+
+        .swiper-button-prev {
+            display: none;
+        }
+    }
+}

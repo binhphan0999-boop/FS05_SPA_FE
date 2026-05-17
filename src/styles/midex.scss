@@ -1,0 +1,212 @@
+.mid-ex-1 {
+    display: none;
+}
+
+.mid-ex {
+    display: flex;
+    margin-top: 30px;
+    justify-content: center;
+    // margin: auto;
+    // padding: 50px 0;
+
+    .container-c {
+        margin-top: 60px;
+    }
+
+    .content-1 {
+        width: 430px;
+        display: flex;
+        margin-right: 80px;
+
+
+        .c-font {
+            margin-right: 20px;
+            margin-bottom: 50px;
+
+            h3 {
+                font-size: 26px;
+                text-align: right;
+            }
+
+            p {
+                // font-family: "Roboto" sans-serif;
+                line-height: 1.63;
+                color: #555555;
+                text-align: right;
+                font-weight: 500;
+            }
+        }
+    }
+
+    .content-2 {
+        width: 430px;
+        display: flex;
+        margin-left: 80px;
+
+        .c-font {
+            margin-left: 20px;
+            margin-bottom: 50px;
+
+            h3 {
+                font-size: 26px;
+                // text-align: right;
+            }
+
+            p {
+                // font-family: "Roboto" sans-serif;
+                line-height: 1.63;
+                color: #555555;
+                // text-align: right;
+                font-weight: 500;
+            }
+        }
+    }
+
+    .img-cor {
+        img {
+            position: relative;
+            top: -37px;
+        }
+    }
+
+    .c-remove-margin {
+        margin-bottom: 0 !important;
+    }
+}
+
+.mid-ex::before {
+    // padding: 50px 0;
+    content: "";
+    position: absolute;
+    left: 0;
+    // top: 100px;
+    width: 50%;
+    height: 600px;
+    border-radius: 0 200px 200px 0;
+    background-image: linear-gradient(var(--gradient-direction, to right), rgb(254, 254, 254) 0%, rgb(253, 230, 216) 100%);
+    z-index: -1;
+}
+
+.mid-ex::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    left: auto;
+    // top: 100px;
+    width: 50%;
+    height: 600px;
+    border-radius: 200px 0 0 200px;
+    background-image: linear-gradient(var(--gradient-direction, to right), rgb(254, 254, 254) 0%, rgb(253, 230, 216) 100%);
+    z-index: -1;
+    --gradient-direction: to left;
+}
+
+@media (max-width: 1250px) {
+    .mid-ex {
+        display: none !important;
+
+    }
+
+    .mid-ex-1 {
+        display: flex;
+    }
+
+    .mid-ex-1::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        width: 50%;
+        height: 100%;
+        // border-radius: 0 200px 200px 0;
+        background-image: linear-gradient(var(--gradient-direction, to right), rgb(254, 254, 254) 0%, rgb(253, 230, 216) 100%);
+        z-index: -1;
+    }
+
+    .mid-ex-1::after {
+        content: "";
+        position: absolute;
+        right: 0;
+        left: auto;
+        width: 50%;
+        height: 100%;
+        // border-radius: 200px 0 0 200px;
+        background-image: linear-gradient(var(--gradient-direction, to right), rgb(254, 254, 254) 0%, rgb(253, 230, 216) 100%);
+        z-index: -1;
+        --gradient-direction: to left;
+    }
+
+
+}
+
+
+/* Tablet nhỏ và dưới */
+@media (max-width: 1024px) {
+    .mid-ex {
+        display: none !important;
+
+    }
+
+    .mid-ex-1 {
+        display: flex;
+    }
+
+    .mid-ex-1::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        width: 50%;
+        height: 100%;
+        // border-radius: 0 200px 200px 0;
+        background-image: linear-gradient(var(--gradient-direction, to right), rgb(254, 254, 254) 0%, rgb(253, 230, 216) 100%);
+        z-index: -1;
+    }
+
+    .mid-ex-1::after {
+        content: "";
+        position: absolute;
+        right: 0;
+        left: auto;
+        width: 50%;
+        height: 100%;
+        // border-radius: 200px 0 0 200px;
+        background-image: linear-gradient(var(--gradient-direction, to right), rgb(254, 254, 254) 0%, rgb(253, 230, 216) 100%);
+        z-index: -1;
+        --gradient-direction: to left;
+    }
+
+
+}
+
+/* Tablet đứng */
+@media (max-width: 768px) {
+    .mid-ex-1 {
+        display: block !important;
+    }
+
+    .mid-ex-1 .container-c::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        // border-radius: 0 200px 200px 0;
+        background-image: linear-gradient(var(--gradient-direction, to right), rgb(254, 254, 254) 0%, rgb(253, 230, 216) 100%);
+        z-index: -1;
+    }
+
+    .mid-ex-1::before {
+        width: 0;
+    }
+
+    .mid-ex-1::after {
+        width: 0;
+    }
+
+    .mid-ex-1 .container-c .ex-padding {
+        padding-top: 50px !important;
+    }
+
+    .container-c{
+        padding-top: 0px;
+    }
+}

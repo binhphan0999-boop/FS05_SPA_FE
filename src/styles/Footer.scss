@@ -1,0 +1,143 @@
+.footer-spa {
+    padding: 0 20px;
+
+    .enter-input {
+        input {
+            color: #fff !important;
+            border-bottom: 1px solid #9a563a;
+            padding-bottom: 10px;
+            font-weight: bold;
+            outline: none;
+            font-size: 14px;
+            width: 246px;
+        }
+
+    }
+
+    .btn-1 {
+        position: relative;
+        overflow: hidden;
+        padding: 11px 30px;
+        font-size: 15px;
+        background-color: #9a563a;
+        cursor: pointer;
+        border: none;
+        transition: color 0.4s ease, background-color 0.4s ease;
+        margin-right: 10px;
+        text-transform: uppercase;
+
+
+        &::before {
+            content: "";
+            position: absolute;
+            width: 52%;
+            height: 100%;
+            left: 0;
+            top: 100%;
+            background: #121f38;
+            transition: top 0.6s ease;
+            z-index: 0;
+        }
+
+        &::after {
+            content: "";
+            position: absolute;
+            width: 52%;
+            height: 100%;
+            right: 0;
+            top: -100%;
+            background: #121f38;
+            transition: top 0.6s ease;
+            z-index: 0;
+        }
+
+        &:hover::before {
+            top: 0;
+        }
+
+        &:hover::after {
+            top: 0;
+        }
+
+        span {
+            font-size: 14px;
+            position: relative;
+            z-index: 1;
+            color: #FFFFFF;
+            font-weight: bold;
+
+
+        }
+
+        .icon-right {
+            margin-left: 10px;
+            padding: 15px;
+            background-color: #9a563a;
+
+            i {
+                color: #ffffff;
+            }
+        }
+
+        &:hover span {
+            color: #ffffff;
+        }
+
+    }
+
+
+}
+
+@media (max-width: 1200px) {
+    .footer-spa {
+        .introduce-margin {
+            margin-right: 40px;
+        }
+
+        .footer-share {
+            display: block !important;
+
+            .footer-share-item {
+                width: 100% !important;
+                border: none !important;
+                border-bottom: 1px solid #9a563a !important;
+                padding: 30px;
+            }
+        }
+    }
+}
+
+@media (max-width: 1100px) {
+    .footer-spa {
+        .introduce-margin {
+            margin-right: 40px;
+        }
+
+        .introduce-flex {
+            display: block !important;
+
+            .introduce-item {
+                margin-top: 20px;
+            }
+        }
+
+    }
+}
+
+@media (max-width: 768px) {
+    .footer-spa {
+        .introduce-margin {
+            margin-right: 40px;
+        }
+
+        .introduce-flex {
+            display: block !important;
+
+            .introduce-item {
+                margin-top: 20px;
+                display: block !important;
+            }
+        }
+
+    }
+}
