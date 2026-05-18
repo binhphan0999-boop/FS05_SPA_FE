@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import type { Product, CartItem, CheckoutData } from '../../types/product.type';
 import { productsData } from './data';
-import RootLayout from '../layout';
 import ProductCard from '../../components/san-pham/ProductCard';
 import CartSidebar from '../../components/san-pham/CartSidebar';
 import ProductInfoModal from '../../components/san-pham/ProductInfoModal';
