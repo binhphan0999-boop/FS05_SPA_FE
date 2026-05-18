@@ -9,7 +9,7 @@ import ProductInfoModal from '../../components/san-pham/ProductInfoModal';
 import ConfirmModal from '../../components/san-pham/ConfirmModal';
 import CheckoutView from '../../components/san-pham/CheckoutView';
 
-import '../../styles/san-pham//shop.css';
+import '../../styles/san-pham/shop.css';
 
 export default function ShopPage() {
   // State cho tìm kiếm
