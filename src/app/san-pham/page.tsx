@@ -33,18 +33,35 @@ export default function ShopPage() {
   const [isClearCartModalOpen, setIsClearCartModalOpen] = useState(false);
   const [currentView, setCurrentView] = useState<'shop' | 'checkout'>('shop');
   const [isOrderLoading, setIsOrderLoading] = useState(false);
+  const [isOrderSuccessModalOpen, setIsOrderSuccessModalOpen] = useState(false);
 
   // State cho modal thông tin sản phẩm
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isProductInfoOpen, setIsProductInfoOpen] = useState(false);
 
   // State cho checkout
-  const [checkoutData, setCheckoutData] = useState<CheckoutData>({
+  const [checkoutData, setCheckoutData] = useState<any>({
     name: '',
     phone: '',
     address: '',
     note: '',
+    paymentMethod: 'cod',
   });
+
+  // State cho coupon
+  const [couponCode, setCouponCode] = useState('');
+  const [discountAmount, setDiscountAmount] = useState(0);
+  const [couponMessage, setCouponMessage] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
+
+  const applyCoupon = () => {
+    if (couponCode.toUpperCase() === 'MONA10') {
+      setDiscountAmount(Math.round(totalAmountNum * 0.1));
+      setCouponMessage({ text: 'Áp dụng mã giảm giá thành công! Bạn được giảm 10% đơn hàng.', type: 'success' });
+    } else {
+      setCouponMessage({ text: 'Mã giảm giá không hợp lệ hoặc đã hết hạn.', type: 'error' });
+      setDiscountAmount(0);
+    }
+  };
 
   // Lưu giỏ hàng vào localStorage
   useEffect(() => {
@@ -152,8 +169,11 @@ export default function ShopPage() {
 
     const orderPayload = {
       customer: checkoutData,
+      paymentMethod: checkoutData.paymentMethod === 'bank' ? 'Chuyển khoản ngân hàng' : 'Thanh toán khi nhận hàng (COD)',
       items: cart,
-      total: totalAmountStr,
+      subtotal: totalAmountStr,
+      discount: `-${discountAmount.toLocaleString('vi-VN')}đ`,
+      total: (totalAmountNum - discountAmount).toLocaleString('vi-VN') + 'đ',
       createdAt: new Date().toISOString(),
     };
 
@@ -164,10 +184,10 @@ export default function ShopPage() {
         body: JSON.stringify(orderPayload),
       });
 
-      alert('Đặt hàng thành công! Chúng tôi sẽ liên hệ sớm nhất.');
       setCart([]);
       setCurrentView('shop');
       setIsCartOpen(false);
+      setIsOrderSuccessModalOpen(true);
     } catch (error) {
       alert('Có lỗi xảy ra, vui lòng thử lại sau.');
     } finally {
@@ -181,7 +201,15 @@ export default function ShopPage() {
       <CheckoutView
         cart={cart}
         totalAmountStr={totalAmountStr}
-        totalAmountNum={totalAmountNum}
+        totalAmountNum={totalAmountNum - discountAmount}
+        discountAmount={discountAmount}
+        couponCode={couponCode}
+        setCouponCode={(code) => {
+          setCouponCode(code);
+          setCouponMessage(null); // Xóa thông báo khi người dùng nhập mã mới
+        }}
+        couponMessage={couponMessage}
+        onApplyCoupon={applyCoupon}
         checkoutData={checkoutData}
         setCheckoutData={setCheckoutData}
         onBack={() => setCurrentView('shop')}
@@ -331,6 +359,20 @@ export default function ShopPage() {
         onClose={closeProductInfo}
         onAddToCart={addToCart}
       />
+
+      {/* Success Modal */}
+      {isOrderSuccessModalOpen && (
+        <div className="cart-overlay" onClick={() => setIsOrderSuccessModalOpen(false)}>
+          <div className="order-success-modal" onClick={(e) => e.stopPropagation()}>
+            <i className="fa fa-check-circle success-icon"></i>
+            <h2>ĐẶT HÀNG THÀNH CÔNG!</h2>
+            <p>Cảm ơn bạn đã tin tưởng Mona Beauty. Chúng tôi sẽ liên hệ với bạn qua số điện thoại để xác nhận đơn hàng trong thời gian sớm nhất.</p>
+            <button className="cta-btn" onClick={() => setIsOrderSuccessModalOpen(false)}>
+              TIẾP TỤC MUA SẮM
+            </button>
+          </div>
+        </div>
+      )}
     </>
   );
 }

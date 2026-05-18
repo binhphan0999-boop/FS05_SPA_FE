@@ -1,3 +1,4 @@
+"use client";
 import Link from "next/link";
 import type { News } from "../../types/news";
 
@@ -10,18 +11,23 @@ export default function NewsCard({
 }: Props) {
   return (
     <div className="news-card">
-      <img
-        src={news.image}
-        alt={news.title}
-      />
+      <div className="news-card-image">
+        <img src={news.image} alt={news.title} />
+      </div>
 
-      <div className="news-content">
-        <h2>{news.title}</h2>
+      <div className="news-card-info">
+        <div className="news-card-meta">
+          <span><i className="fa fa-user"></i> {news.author}</span>
+          <span><i className="fa fa-calendar"></i> {news.createdAt}</span>
+          <span><i className="fa fa-comments"></i> {(news as any).commentCount || 0} Bình luận</span>
+        </div>
 
-        <p>{news.description}</p>
+        <h2 className="news-card-title">{news.title}</h2>
 
-        <Link href={`/tin-tuc/${news.id}`}>
-          Đọc thêm
+        <p className="news-card-desc">{news.description}</p>
+
+        <Link href={`/tin-tuc/${news.id}`} className="news-card-link">
+          ĐỌC THÊM <i className="fa fa-arrow-right"></i>
         </Link>
       </div>
     </div>

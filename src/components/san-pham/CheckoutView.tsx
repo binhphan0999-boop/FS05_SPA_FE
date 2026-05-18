@@ -4,6 +4,11 @@ interface CheckoutViewProps {
   cart: CartItem[];
   totalAmountStr: string;
   totalAmountNum: number;
+  discountAmount: number;
+  couponCode: string;
+  setCouponCode: (data: string) => void;
+  couponMessage: { text: string; type: 'success' | 'error' } | null;
+  onApplyCoupon: () => void;
   checkoutData: CheckoutData;
   setCheckoutData: (data: CheckoutData) => void;
   onBack: () => void;
@@ -15,6 +20,11 @@ export default function CheckoutView({
   cart,
   totalAmountStr,
   totalAmountNum,
+  discountAmount,
+  couponCode,
+  setCouponCode,
+  couponMessage,
+  onApplyCoupon,
   checkoutData,
   setCheckoutData,
   onBack,
@@ -23,14 +33,14 @@ export default function CheckoutView({
 }: CheckoutViewProps) {
   return (
     <div className="checkout-view-container">
-      <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+      <div className="checkout-container-inner">
         <div className="checkout-back-btn" onClick={onBack}>← Quay lại cửa hàng</div>
         <h1>CHI TIẾT THANH TOÁN</h1>
 
         <div className="checkout-grid">
           {/* Cột trái: Danh sách sản phẩm và Form */}
           <div>
-            <div style={{ background: '#fff', padding: '1.5rem', borderRadius: '1rem', border: '1px solid #eee', marginBottom: '2rem' }}>
+            <div className="checkout-box">
               <h3>Sản phẩm của bạn</h3>
               <table className="order-table">
                 <thead>
@@ -43,7 +53,7 @@ export default function CheckoutView({
                 <tbody>
                   {cart.map((item) => (
                     <tr key={item.product.name}>
-                      <td style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                      <td className="order-item-cell">
                         <img src={item.product.image} alt={item.product.name} />
                         <span>{item.product.name}</span>
                       </td>
@@ -53,9 +63,38 @@ export default function CheckoutView({
                   ))}
                 </tbody>
               </table>
-              <div style={{ textAlign: 'right', fontSize: '1.2rem', fontWeight: 'bold' }}>
-                TỔNG CỘNG: <span style={{ color: '#c97d60' }}>{totalAmountStr}</span>
+              
+              <div className="order-summary-footer">
+                <div className="summary-line">
+                  Tạm tính: <span>{totalAmountStr}</span>
+                </div>
+                {discountAmount > 0 && (
+                  <div className="summary-line discount">
+                    Giảm giá: -{discountAmount.toLocaleString('vi-VN')}đ
+                  </div>
+                )}
+                <div className="summary-total">
+                  TỔNG CỘNG: <span>{totalAmountNum.toLocaleString('vi-VN')}đ</span>
+                </div>
               </div>
+            </div>
+
+            <div className="coupon-section checkout-box">
+              <h3>Mã giảm giá</h3>
+              <div className="coupon-input-group">
+                <input 
+                  type="text" 
+                  placeholder="Nhập mã ưu đãi (Thử: MONA10)" 
+                  value={couponCode}
+                  onChange={(e) => setCouponCode(e.target.value)}
+                />
+                <button type="button" onClick={onApplyCoupon}>Áp dụng</button>
+              </div>
+              {couponMessage && (
+                <div className={`coupon-message ${couponMessage.type}`}>
+                  {couponMessage.text}
+                </div>
+              )}
             </div>
 
             <div className="checkout-form">
@@ -104,26 +143,60 @@ export default function CheckoutView({
 
           {/* Cột phải: QR Code */}
           <div className="qr-section">
-            <h3>QUÉT MÃ CHUYỂN KHOẢN</h3>
-            <p style={{ fontSize: '0.9rem', color: '#666' }}>Vui lòng quét mã bên dưới để thanh toán đơn hàng.</p>
-            
-            <img 
-              src={`https://img.vietqr.io/image/MB-0346852333-compact2.png?amount=${totalAmountNum}&addInfo=THANH%20TOAN%20MONA%20${checkoutData.phone}&accountName=NGUYEN%20HUU%20DAT`} 
-              alt="QR Thanh toán" 
-              className="qr-image" 
-              style={{ width: '250px', height: '250px' }}
-            />
-
-            <div style={{ textAlign: 'left', background: '#fff', padding: '1rem', borderRadius: '0.5rem', marginTop: '1rem' }}>
-              <p><strong>Ngân hàng:</strong> MB Bank</p>
-              <p><strong>Số TK:</strong> 0346852333</p>
-              <p><strong>Chủ TK:</strong> NGUYEN HUU DAT</p>
+            <div className="payment-method-header">
+              <h3>Phương thức thanh toán</h3>
+              <div className="payment-options">
+                <label className="payment-option-label">
+                  <input 
+                    type="radio" 
+                    name="paymentMethod" 
+                    checked={(checkoutData as any).paymentMethod === 'cod'} 
+                    onChange={() => setCheckoutData({...checkoutData, paymentMethod: 'cod'} as any)} 
+                  />
+                  <span>Thanh toán khi nhận hàng (COD)</span>
+                </label>
+                <label className="payment-option-label">
+                  <input 
+                    type="radio" 
+                    name="paymentMethod" 
+                    checked={(checkoutData as any).paymentMethod === 'bank'} 
+                    onChange={() => setCheckoutData({...checkoutData, paymentMethod: 'bank'} as any)} 
+                  />
+                  <span>Chuyển khoản ngân hàng (QR Code)</span>
+                </label>
+              </div>
             </div>
+
+            {(checkoutData as any).paymentMethod === 'bank' ? (
+              <>
+                <h3>QUÉT MÃ CHUYỂN KHOẢN</h3>
+                <p style={{ fontSize: '0.9rem', color: '#666' }}>Vui lòng quét mã bên dưới để thanh toán đơn hàng.</p>
+                
+                <img 
+                  src={`https://img.vietqr.io/image/MB-0346852333-compact2.png?amount=${totalAmountNum}&addInfo=THANH%20TOAN%20MONA%20${checkoutData.phone}&accountName=NGUYEN%20HUU%20DAT`} 
+                  alt="QR Thanh toán" 
+                  className="qr-image" 
+                />
+
+                <div className="bank-info-box">
+                  <p><strong>Ngân hàng:</strong> MB Bank</p>
+                  <p><strong>Số TK:</strong> 0346852333</p>
+                  <p><strong>Chủ TK:</strong> NGUYEN HUU DAT</p>
+                </div>
+              </>
+            ) : (
+              <div className="cod-info-box">
+                <i className="fa fa-truck cod-icon"></i>
+                <h3>THANH TOÁN KHI NHẬN HÀNG</h3>
+                <p className="result-text">
+                  Bạn sẽ thanh toán bằng tiền mặt khi nhận sản phẩm.
+                </p>
+              </div>
+            )}
 
             <button 
               onClick={onSubmit} 
               className="checkout-btn" 
-              style={{ marginTop: '2rem' }} 
               disabled={isLoading}
             >
               {isLoading ? 'ĐANG XỬ LÝ...' : 'XÁC NHẬN ĐẶT HÀNG'}

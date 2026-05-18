@@ -178,6 +178,11 @@ body {
   padding: 3rem 1.5rem;
 }
 
+.checkout-container-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
 .checkout-grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -189,6 +194,66 @@ body {
   .checkout-grid {
     grid-template-columns: 1fr 1fr;
   }
+}
+
+.checkout-box {
+  background: #fff;
+  padding: 1.5rem;
+  border-radius: 1rem;
+  border: 1px solid #eee;
+  margin-bottom: 2rem;
+}
+
+.order-item-cell {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.order-summary-footer {
+  border-top: 1px solid #eee;
+  padding-top: 1rem;
+  margin-top: 1rem;
+}
+
+.summary-line {
+  text-align: right;
+  color: #666;
+  margin-bottom: 0.5rem;
+}
+
+.summary-line.discount {
+  color: #ff4d4f;
+}
+
+.summary-total {
+  text-align: right;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.summary-total span {
+  color: #c97d60;
+}
+
+.payment-method-header {
+  text-align: left;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #eee;
+  width: 100%;
+}
+
+.payment-method-header h3 {
+  margin-bottom: 1rem;
+}
+
+.payment-option-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-weight: normal;
 }
 
 .form-group {
@@ -252,17 +317,51 @@ body {
 
 .qr-section {
   background: #f9f9f9;
-  padding: 1.5rem;
-  border-radius: 0.75rem;
+  padding: 2.5rem;
+  border-radius: 1.5rem;
   text-align: center;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid #f0f0f0;
+  height: fit-content;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .qr-image {
-  width: 200px;
-  height: 200px;
+  width: 250px;
+  height: 250px;
   margin: 1rem 0;
   border: 4px solid white;
   box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.bank-info-box {
+  text-align: left;
+  background: #fff;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  margin-top: 1rem;
+  width: 100%;
+  max-width: 300px;
+}
+
+.cod-info-box {
+  padding: 1rem 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.cod-info-box p {
+  margin-top: 1rem;
+}
+
+.cod-icon {
+  font-size: 4rem;
+  color: #c97d60;
+  margin-bottom: 1.5rem;
 }
 
 .confirm-modal {
@@ -278,6 +377,39 @@ body {
   transform: translate(-50%, -50%);
   z-index: 1100;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.order-success-modal {
+  width: 90%;
+  max-width: 500px;
+  background: white;
+  padding: 3rem 2rem;
+  border-radius: 1.5rem;
+  text-align: center;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1100;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+  animation: modalFadeIn 0.4s ease-out;
+}
+
+@keyframes modalFadeIn {
+  from { opacity: 0; transform: translate(-50%, -60%); }
+  to { opacity: 1; transform: translate(-50%, -50%); }
+}
+
+.success-icon {
+  font-size: 5rem;
+  color: #28a745;
+  margin-bottom: 1.5rem;
+}
+
+.order-success-modal p {
+  color: #666;
+  line-height: 1.6;
+  margin-bottom: 2rem;
 }
 
 .confirm-modal h3 {
@@ -314,8 +446,52 @@ body {
   border-radius: 0.5rem;
   font-weight: bold;
   cursor: pointer;
+  margin-top: 2rem;
   transition: opacity 0.3s;
   text-transform: uppercase;
+}
+
+.coupon-input-group {
+  display: flex;
+  gap: 10px;
+  margin-top: 1rem;
+}
+
+.coupon-input-group input {
+  flex: 1;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 0.5rem;
+  outline: none;
+}
+
+.coupon-input-group button {
+  background-color: #14213d;
+  color: white;
+  border: none;
+  padding: 0 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.coupon-input-group button:hover {
+  background-color: #1d2d50;
+}
+
+.coupon-message {
+  margin-top: 10px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.coupon-message.success {
+  color: #28a745;
+}
+
+.coupon-message.error {
+  color: #ff4d4f;
 }
 
 .checkout-btn:hover {
@@ -676,8 +852,9 @@ nav a:hover {
   left: 10px;
   background-color: #c97d60;
   color: white;
-  padding: 4px 12px;
+  padding: 10px 12px;
   border-radius: 20px;
+  text-align: center;
   font-size: 0.75rem;
   font-weight: bold;
   z-index: 10;

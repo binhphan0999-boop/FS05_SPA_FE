@@ -16,6 +16,8 @@ export const newsData: News[] = [
     author: "Mona Beauty",
 
     createdAt: "13/05/2026",
+
+    commentCount: 12,
   },
 
   {
@@ -34,5 +36,7 @@ export const newsData: News[] = [
     author: "Admin",
 
     createdAt: "12/05/2026",
+
+    commentCount: 5,
   },
 ]
