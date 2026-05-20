@@ -1,7 +1,21 @@
 import axios from 'axios';
-import type { Product } from '../../types/product.type'; // Đảm bảo đường dẫn đúng đến file type của bạn
+import type { Product, BackendProduct } from '../../types/product.type';
 
-const API_BASE_URL = 'http://localhost:8000/api/v1'; // Thay đổi URL này cho phù hợp với backend của bạn
+const API_BASE_URL = 'http://localhost:8000/api/v1';
+
+// Transform backend data to frontend format
+const transformProduct = (backendProduct: BackendProduct): Product => ({
+  id: backendProduct.id,
+  name: backendProduct.name,
+  price: backendProduct.price.toLocaleString('vi-VN') + 'đ',
+  category: backendProduct.category.name,
+  image: backendProduct.imgUrl,
+  info: backendProduct.description,
+  sale: backendProduct.status === 'SALE',
+  stock: backendProduct.stock,
+  sku: backendProduct.sku,
+  description: backendProduct.content,
+});
 
 const productService = {
   /**
@@ -10,16 +24,28 @@ const productService = {
    */
   getProducts: async (): Promise<Product[]> => {
     try {
-      const response = await axios.get<Product[]>(`${API_BASE_URL}/products`);
-      return response.data;
+      const response = await axios.get<{ data: BackendProduct[] }>(`${API_BASE_URL}/products`);
+      return response.data.data.map(transformProduct);
     } catch (error) {
       console.error('Lỗi khi lấy danh sách sản phẩm:', error);
-      // Tùy chọn: throw error hoặc trả về mảng rỗng tùy theo cách bạn muốn xử lý lỗi
       throw error;
     }
   },
 
-  // Bạn có thể thêm các hàm khác như getProductById, createProduct, updateProduct, deleteProduct ở đây
+  /**
+   * Lấy sản phẩm theo ID
+   * @param id - Product ID
+   * @returns Promise<Product>
+   */
+  getProductById: async (id: string): Promise<Product> => {
+    try {
+      const response = await axios.get<{ data: BackendProduct }>(`${API_BASE_URL}/products/${id}`);
+      return transformProduct(response.data.data);
+    } catch (error) {
+      console.error('Lỗi khi lấy sản phẩm:', error);
+      throw error;
+    }
+  },
 };
 
 export default productService;

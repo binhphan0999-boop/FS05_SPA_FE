@@ -138,8 +138,8 @@ export default function SwiperSlider() {
                     <div className='px-[15px] py-[40px] border-b border-r border-[#9a563a] w-[35%] flex justify-center items-center footer-share-item'>
                         <ul className='flex'>
                             {
-                                linkShare.map(m => {
-                                    return <li className='flex justify-center text-center items-start pt-0 pr-[8px] pb-0 pl-0 relative'>
+                                linkShare.map((m, index) => {
+                                    return <li key={index} className='flex justify-center text-center items-start pt-0 pr-[8px] pb-0 pl-0 relative'>
                                         <a href="" className='flex justify-start text-left'>
                                             <div className='
                                         w-[55px] h-[55px] border border-[1px] border-[#BEBEBE] hover:border-[#9a563a]
@@ -192,8 +192,8 @@ export default function SwiperSlider() {
                                 <div>
                                     <ul>
                                         {
-                                            imona.map(m => {
-                                                return <li className='pb-[14px]'>
+                                            imona.map((m, index) => {
+                                                return <li key={index} className='pb-[14px]'>
                                                     <a href="" className='flex no-underline hover:no-underline'>
                                                         <div><i className={`${m.icon} text-[#9a563a] text-[18px]`} aria-hidden="true"></i></div><span className='pl-[10px] text-[16px] font-bold text-[#A3A2A2] transition-all duration-300 ease-in-out no-underline hover:text-[#9a563a]'>{m.title}</span>
                                                     </a>
@@ -215,8 +215,8 @@ export default function SwiperSlider() {
                                 <div>
                                     <ul>
                                         {
-                                            linkHome.map(m => {
-                                                return <li className='pb-[14px]'>
+                                            linkHome.map((m, index) => {
+                                                return <li key={index} className='pb-[14px]'>
                                                     <a href="" className='flex no-underline hover:no-underline'>
                                                         <div><i className={`${m.icon} text-[#9a563a] text-[18px]`} aria-hidden="true"></i></div><span className='pl-[10px] text-[16px] text-[#A3A2A2] transition-all duration-300 ease-in-out no-underline hover:text-[#9a563a]'>{m.title}</span>
                                                     </a>
@@ -235,8 +235,8 @@ export default function SwiperSlider() {
                                 <div>
                                     <ul>
                                         {
-                                            itemFooter.map(m => {
-                                                return <li className='pb-[14px]'>
+                                            itemFooter.map((m, index) => {
+                                                return <li key={index}  className='pb-[14px]'>
                                                     <a href="" className='flex no-underline hover:no-underline'>
                                                         <div><i className={`${m.icon} text-[#9a563a] text-[18px]`} aria-hidden="true"></i></div><span className='pl-[10px] text-[16px] text-[#A3A2A2] transition-all duration-300 ease-in-out no-underline hover:text-[#9a563a]'>{m.title}</span>
                                                     </a>

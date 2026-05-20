@@ -9,6 +9,7 @@ import ProductInfoModal from '../../components/san-pham/ProductInfoModal';
 import CheckoutView from '../../components/san-pham/CheckoutView';
 
 import '../../styles/san-pham/shop.css';
+import ConfirmModal from '@/components/san-pham/ConfirmModal';
 
 export default function ShopPage() {
   // State chứa danh sách sản phẩm từ backend
