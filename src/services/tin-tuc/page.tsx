@@ -1,7 +1,7 @@
 "use client";
 
 import { useParams } from "next/navigation"
-import { newsData } from "../data"
+import { newsData } from "../../app/tin-tuc/data"
 
 export default function NewsDetailPage() {
   const params = useParams()

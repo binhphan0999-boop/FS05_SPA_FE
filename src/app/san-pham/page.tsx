@@ -2,16 +2,38 @@
 
 import { useState, useEffect } from 'react';
 import type { Product, CartItem, CheckoutData } from '../../types/product.type';
-import { productsData } from './data';
+import productService from '../../services/san-pham/product.service'; // Import service mới
 import ProductCard from '../../components/san-pham/ProductCard';
 import CartSidebar from '../../components/san-pham/CartSidebar';
 import ProductInfoModal from '../../components/san-pham/ProductInfoModal';
-import ConfirmModal from '../../components/san-pham/ConfirmModal';
 import CheckoutView from '../../components/san-pham/CheckoutView';
 
 import '../../styles/san-pham/shop.css';
 
 export default function ShopPage() {
+  // State chứa danh sách sản phẩm từ backend
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Fetch data từ backend
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setLoading(true);
+        // Sử dụng productService để lấy dữ liệu
+        const data = await productService.getProducts();
+        setProducts(data);
+      } catch (err: any) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
   // State cho tìm kiếm
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -69,7 +91,7 @@ export default function ShopPage() {
   }, [cart]);
 
   // Lọc sản phẩm theo tìm kiếm
-  const filteredProducts = productsData.filter(product =>
+  const filteredProducts = products.filter(product =>
     product.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -194,6 +216,10 @@ export default function ShopPage() {
       setIsOrderLoading(false);
     }
   };
+
+  // Hiển thị trạng thái loading hoặc lỗi
+  if (loading) return <div className="text-center py-20">Đang tải sản phẩm...</div>;
+  if (error) return <div className="text-center py-20 text-red-500">Lỗi: {error}</div>;
 
   // Nếu đang ở view thanh toán, render giao diện thanh toán riêng
   if (currentView === 'checkout') {
