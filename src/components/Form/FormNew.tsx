@@ -7,6 +7,8 @@ import { useRouter } from "next/navigation";
 import type { UploadChangeParam } from "antd/es/upload";
 import type { RcFile } from "antd/es/upload/interface";
 
+import '../../styles/san-pham/shop.css';
+
 type ShirtFormValues = {
     name: string;
     description: string;
@@ -97,31 +99,53 @@ export default function FormNew({
     }
 
     return (
-        <div className="p-4">
-            <ButtonBack />
-
-            <Form
-                form={form}
-                name="validateOnly"
-                layout="vertical"
-                onFinish={onFinish}
-                autoComplete="off"
+        <>
+            {/* Banner tương tự trang Sản phẩm */}
+            <div
+                className="banner"
+                style={{
+                    backgroundImage: "url('/images/image_48.jpg')",
+                }}
             >
-                {formCol.map((m: any) => {
-                    return handleFormItem(m)
-                })}
-                <Form.Item style={{ display: "flex", justifyContent: "center" }}>
-                    <Space>
-                        <Button type="primary" htmlType="submit">
-                            <i className="fa fa-plus" aria-hidden="true"></i> Thêm mới
-                        </Button>
-                        <Button htmlType="reset">
-                            <i className="fa fa-refresh" aria-hidden="true"></i> Làm mới
-                        </Button>
-                    </Space>
-                </Form.Item>
-            </Form>
+                <div className="banner-content">
+                    <h1>THÊM MỚI</h1>
+                    <div className="breadcrumb">
+                        <span onClick={() => router.push('/')} style={{cursor: 'pointer'}}>Trang chủ</span>
+                        <span>›</span>
+                        <span>Quản lý nội dung</span>
+                    </div>
+                </div>
+            </div>
 
-        </div>
+            {/* Wrapper nội dung với style lơ lửng đè lên banner */}
+            <div className="content">
+                <div className="p-4" style={{ maxWidth: '1200px', margin: '0 auto', backgroundColor: '#fff', borderRadius: '15px', boxShadow: '0 10px 40px rgba(0,0,0,0.05)', marginTop: '-80px', position: 'relative', zIndex: 10 }}>
+                    <ButtonBack />
+
+                    <Form
+                        form={form}
+                        name="validateOnly"
+                        layout="vertical"
+                        onFinish={onFinish}
+                        autoComplete="off"
+                        style={{ marginTop: '20px' }}
+                    >
+                        {formCol.map((m: any) => {
+                            return handleFormItem(m)
+                        })}
+                        <Form.Item style={{ display: "flex", justifyContent: "center", marginTop: '2rem' }}>
+                            <Space size="large">
+                                <Button type="primary" htmlType="submit" size="large" style={{ minWidth: '150px' }}>
+                                    <i className="fa fa-plus" aria-hidden="true" style={{marginRight: '8px'}}></i> Thêm mới
+                                </Button>
+                                <Button htmlType="reset" size="large" style={{ minWidth: '150px' }}>
+                                    <i className="fa fa-refresh" aria-hidden="true" style={{marginRight: '8px'}}></i> Làm mới
+                                </Button>
+                            </Space>
+                        </Form.Item>
+                    </Form>
+                </div>
+            </div>
+        </>
     );
 }
