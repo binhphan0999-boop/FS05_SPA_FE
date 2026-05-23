@@ -1,4 +1,5 @@
-import type { CartItem, CheckoutData } from '../types/product';
+import type { CartItem, CheckoutData } from '../../types/product.type';
+import CouponList from './CouponList';
 
 interface CheckoutViewProps {
   cart: CartItem[];
@@ -95,6 +96,12 @@ export default function CheckoutView({
                   {couponMessage.text}
                 </div>
               )}
+              
+              <CouponList 
+                totalAmount={totalAmountNum}
+                onSelectCoupon={setCouponCode}
+                selectedCode={couponCode}
+              />
             </div>
 
             <div className="checkout-form">

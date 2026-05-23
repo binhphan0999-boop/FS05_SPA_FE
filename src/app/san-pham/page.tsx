@@ -2,13 +2,13 @@
 
 import { useState, useEffect } from 'react';
 import type { Product, CartItem, CheckoutData } from '../../types/product.type';
-import productService from '../../services/san-pham/product.service'; // Import service mới
+import productService from '../../services/san-pham/product.service';
+import couponService from '../../services/san-pham/coupon.service';
 import ProductCard from '../../components/san-pham/ProductCard';
 import CartSidebar from '../../components/san-pham/CartSidebar';
 import ProductInfoModal from '../../components/san-pham/ProductInfoModal';
 import CheckoutView from '../../components/san-pham/CheckoutView';
 
-import '../../styles/san-pham/shop.css';
 import ConfirmModal from '@/components/san-pham/ConfirmModal';
 
 export default function ShopPage() {
@@ -46,10 +46,17 @@ export default function ShopPage() {
   const itemsPerPage = 12;
 
   // State cho giỏ hàng
-  const [cart, setCart] = useState<CartItem[]>(() => {
+  const [cart, setCart] = useState<CartItem[]>([]);
+  const [isHydrated, setIsHydrated] = useState(false);
+
+  // Load giỏ hàng từ localStorage sau khi component mount (chỉ chạy ở phía client)
+  useEffect(() => {
     const savedCart = localStorage.getItem('mona-beauty-cart');
-    return savedCart ? JSON.parse(savedCart) : [];
-  });
+    if (savedCart) {
+      setCart(JSON.parse(savedCart));
+    }
+    setIsHydrated(true);
+  }, []);
 
   // State cho UI
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -75,30 +82,83 @@ export default function ShopPage() {
   const [couponCode, setCouponCode] = useState('');
   const [discountAmount, setDiscountAmount] = useState(0);
   const [couponMessage, setCouponMessage] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
+  const [availableCoupons, setAvailableCoupons] = useState<any[]>([]);
 
-  const applyCoupon = () => {
-    if (couponCode.toUpperCase() === 'MONA10') {
-      setDiscountAmount(Math.round(totalAmountNum * 0.1));
-      setCouponMessage({ text: 'Áp dụng mã giảm giá thành công! Bạn được giảm 10% đơn hàng.', type: 'success' });
-    } else {
-      setCouponMessage({ text: 'Mã giảm giá không hợp lệ hoặc đã hết hạn.', type: 'error' });
+  // Load coupons khi component mount
+  useEffect(() => {
+    const loadCoupons = async () => {
+      try {
+        const coupons = await couponService.getCoupons();
+        setAvailableCoupons(coupons);
+      } catch (error) {
+        console.error('Lỗi khi tải coupons:', error);
+      }
+    };
+    loadCoupons();
+  }, []);
+
+  // Tính toán thông tin giỏ hàng trước để dùng trong applyCoupon
+  const getNumericPrice = (priceStr: string): number => 
+    parseInt(priceStr.replace(/\D/g, ''));
+
+  const totalAmountNum = cart.reduce((sum, item) => {
+    const price = getNumericPrice(item.product.price);
+    return sum + price * item.quantity;
+  }, 0);
+
+  const applyCoupon = async () => {
+    if (!couponCode.trim()) {
+      setCouponMessage({ text: 'Vui lòng nhập mã giảm giá', type: 'error' });
+      return;
+    }
+
+    console.log('Applying coupon:', couponCode, 'Total:', totalAmountNum, 'Available:', availableCoupons.length);
+
+    // Tìm coupon từ list
+    const foundCoupon = availableCoupons.find(
+      c => c.code.toUpperCase() === couponCode.toUpperCase()
+    );
+
+    if (!foundCoupon) {
+      console.log('Coupon not found');
+      setCouponMessage({ text: 'Mã giảm giá không tồn tại', type: 'error' });
       setDiscountAmount(0);
+      return;
+    }
+
+    console.log('Found coupon:', foundCoupon);
+
+    // Tính discount từ coupon
+    const validation = couponService.calculateDiscount(foundCoupon, totalAmountNum);
+
+    console.log('Validation result:', validation);
+
+    if (validation.isValid) {
+      setDiscountAmount(validation.discountAmount);
+      setCouponMessage({
+        text: validation.message,
+        type: 'success'
+      });
+    } else {
+      setDiscountAmount(0);
+      setCouponMessage({
+        text: validation.message,
+        type: 'error'
+      });
     }
   };
 
   // Lưu giỏ hàng vào localStorage
   useEffect(() => {
-    localStorage.setItem('mona-beauty-cart', JSON.stringify(cart));
-  }, [cart]);
+    if (isHydrated) {
+      localStorage.setItem('mona-beauty-cart', JSON.stringify(cart));
+    }
+  }, [cart, isHydrated]);
 
   // Lọc sản phẩm theo tìm kiếm
   const filteredProducts = products.filter(product =>
     product.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
-
-  // Hàm chuyển đổi giá từ chuỗi sang số (vd: "220,000đ" -> 220000)
-  const getNumericPrice = (priceStr: string): number => 
-    parseInt(priceStr.replace(/\D/g, ''));
 
   // Sắp xếp sản phẩm
   const sortedProducts = [...filteredProducts].sort((a, b) => {
@@ -119,10 +179,6 @@ export default function ShopPage() {
 
   // Tính toán thông tin giỏ hàng
   const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
-  const totalAmountNum = cart.reduce((sum, item) => {
-    const price = getNumericPrice(item.product.price);
-    return sum + price * item.quantity;
-  }, 0);
   const totalAmountStr = totalAmountNum.toLocaleString('vi-VN') + 'đ';
 
   // Hàm thêm vào giỏ hàng
