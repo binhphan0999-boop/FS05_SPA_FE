@@ -3,9 +3,19 @@
 import 'swiper/css'
 import 'swiper/css/navigation'
 import 'swiper/css/pagination'
-
+import { useEffect, useState } from 'react';
+import serviceApiService from '../../services/dich-vu/service.service';
+import type { Service } from '../../types/service.type';
 
 export default function SwiperSlider() {
+    const [services, setServices] = useState<Service[]>([]);
+
+    useEffect(() => {
+        serviceApiService.getServices()
+            .then(setServices)
+            .catch(() => {});
+    }, []);
+
     return (
         <div className='d-h-mid-advise'>
             <div>
@@ -33,6 +43,17 @@ export default function SwiperSlider() {
                                         type="date"
                                         className=" w-[100%] h-[70px] px-[25px] py-[20px] mb-[15px] bg-[#fde6d8] text-[#6f6c6c] text-[14px] font-[500] placeholder-[#6f6c6c] focus:outline-none focus:ring-rose-300 transition"
                                     />
+
+                                    <select
+                                        className=" w-[100%] h-[70px] px-[25px] py-[20px] mb-[15px] bg-[#fde6d8] text-[#6f6c6c] text-[14px] font-[500] placeholder-[#6f6c6c] focus:outline-none focus:ring-rose-300 transition"
+                                    >
+                                        <option value="">Chọn dịch vụ</option>
+                                        {services.map((s) => (
+                                            <option key={s.id} value={s.id}>
+                                                {s.name} — {s.price} ({s.duration})
+                                            </option>
+                                        ))}
+                                    </select>
 
                                     <select
                                         className=" w-[100%] h-[70px] px-[25px] py-[20px] mb-[15px] bg-[#fde6d8] text-[#6f6c6c] text-[14px] font-[500] placeholder-[#6f6c6c] focus:outline-none focus:ring-rose-300 transition"
