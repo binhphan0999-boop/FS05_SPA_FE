@@ -8,36 +8,12 @@ import 'swiper/css/pagination'
 import { useRouter } from "next/navigation";
 
 const data = [
-    {
-        image: "/images/image_34.jpg",
-        name: "Emely Jonson",
-        span: "manicure expart"
-    },
-    {
-        image: "/images/image_35.png",
-        name: "Arika Murray",
-        span: "beautician"
-    },
-    {
-        image: "/images/image_36.png",
-        name: "Lola Jonson",
-        span: "spa specialist"
-    },
-    {
-        image: "/images/image_37.png",
-        name: "Rose Marian",
-        span: "massage expert"
-    },
-    {
-        image: "/images/image_35.png",
-        name: "Arika Murray",
-        span: "beautician"
-    },
-    {
-        image: "/images/image_36.png",
-        name: "Lola Jonson",
-        span: "spa specialist"
-    },
+    { id: 1, image: "/images/image_34.jpg", name: "Emely Jonson", span: "manicure expert" },
+    { id: 2, image: "/images/image_35.png", name: "Arika Murray", span: "beautician" },
+    { id: 3, image: "/images/image_36.png", name: "Lola Jonson", span: "spa specialist" },
+    { id: 4, image: "/images/image_37.png", name: "Rose Marian", span: "massage expert" },
+    { id: 1, image: "/images/image_34.jpg", name: "Emely Jonson", span: "manicure expert" },
+    { id: 2, image: "/images/image_35.png", name: "Arika Murray", span: "beautician" },
 ]
 
 export default function SwiperSlider() {
@@ -67,7 +43,7 @@ export default function SwiperSlider() {
                     >
                         {data.map((card, i) => (
                             <SwiperSlide key={i}>
-                                <div className="card" onClick={() => router.push("/thong-tin-doi-ngu/1")}>
+                                <div className="card" onClick={() => router.push(`/chuyen-gia/${card.id}`)}>
 
                                     <div className="card-contentt">
                                         <div className='div-author'>
