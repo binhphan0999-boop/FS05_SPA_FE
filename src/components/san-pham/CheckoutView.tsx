@@ -1,5 +1,6 @@
 import type { CartItem, CheckoutData } from '../../types/product.type';
 import CouponList from './CouponList';
+import ConfirmModal from './ConfirmModal';
 
 interface CheckoutViewProps {
   cart: CartItem[];
@@ -14,6 +15,10 @@ interface CheckoutViewProps {
   setCheckoutData: (data: CheckoutData) => void;
   onBack: () => void;
   onSubmit: (e: React.FormEvent) => void;
+  showConfirm: boolean;
+  setShowConfirm: (val: boolean) => void;
+  onConfirmOrder: () => void;
+  isFormLoading: boolean; // New prop for overall form loading
   isLoading: boolean;
 }
 
@@ -30,6 +35,10 @@ export default function CheckoutView({
   setCheckoutData,
   onBack,
   onSubmit,
+  showConfirm,
+  setShowConfirm,
+  onConfirmOrder,
+  isFormLoading, // Destructure new prop
   isLoading,
 }: CheckoutViewProps) {
   return (
@@ -113,6 +122,7 @@ export default function CheckoutView({
                   required 
                   value={checkoutData.name} 
                   onChange={e => setCheckoutData({...checkoutData, name: e.target.value})} 
+                  disabled={isFormLoading} // Disable when loading
                   placeholder="Nguyễn Văn A" 
                 />
               </div>
@@ -123,6 +133,7 @@ export default function CheckoutView({
                   required 
                   value={checkoutData.phone} 
                   onChange={e => setCheckoutData({...checkoutData, phone: e.target.value})} 
+                  disabled={isFormLoading} // Disable when loading
                   placeholder="090xxxxxxx" 
                 />
               </div>
@@ -157,8 +168,8 @@ export default function CheckoutView({
                   <input 
                     type="radio" 
                     name="paymentMethod" 
-                    checked={(checkoutData as any).paymentMethod === 'cod'} 
-                    onChange={() => setCheckoutData({...checkoutData, paymentMethod: 'cod'} as any)} 
+                    checked={checkoutData.paymentMethod === 'cod'} 
+                    onChange={() => setCheckoutData({...checkoutData, paymentMethod: 'cod'})} 
                   />
                   <span>Thanh toán khi nhận hàng (COD)</span>
                 </label>
@@ -166,15 +177,15 @@ export default function CheckoutView({
                   <input 
                     type="radio" 
                     name="paymentMethod" 
-                    checked={(checkoutData as any).paymentMethod === 'bank'} 
-                    onChange={() => setCheckoutData({...checkoutData, paymentMethod: 'bank'} as any)} 
+                    checked={checkoutData.paymentMethod === 'bank'} 
+                    onChange={() => setCheckoutData({...checkoutData, paymentMethod: 'bank'})} 
                   />
                   <span>Chuyển khoản ngân hàng (QR Code)</span>
                 </label>
               </div>
             </div>
 
-            {(checkoutData as any).paymentMethod === 'bank' ? (
+            {checkoutData.paymentMethod === 'bank' ? (
               <>
                 <h3>QUÉT MÃ CHUYỂN KHOẢN</h3>
                 <p style={{ fontSize: '0.9rem', color: '#666' }}>Vui lòng quét mã bên dưới để thanh toán đơn hàng.</p>
@@ -211,6 +222,16 @@ export default function CheckoutView({
           </div>
         </div>
       </div>
+
+      <ConfirmModal
+        isOpen={showConfirm}
+        title="XÁC NHẬN THÔNG TIN GIAO HÀNG"
+        message={`Họ tên: ${checkoutData.name}\nSố điện thoại: ${checkoutData.phone}\nĐịa chỉ: ${checkoutData.address}\nGhi chú: ${checkoutData.note || 'Không có'}`}
+        onCancel={() => setShowConfirm(false)}
+        onConfirm={onConfirmOrder}
+        confirmText="XÁC NHẬN"
+        cancelText="HỦY"
+      />
     </div>
   );
 }

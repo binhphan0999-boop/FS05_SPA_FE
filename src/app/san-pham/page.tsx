@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import type { Product, CartItem, CheckoutData } from '../../types/product.type';
 import productService from '../../services/san-pham/product.service';
 import couponService from '../../services/san-pham/coupon.service';
+import userService from '../../services/user/user.service';
+import orderService from '../../services/order/order.service';
 import ProductCard from '../../components/san-pham/ProductCard';
 import CartSidebar from '../../components/san-pham/CartSidebar';
 import ProductInfoModal from '../../components/san-pham/ProductInfoModal';
@@ -78,9 +80,18 @@ export default function ShopPage() {
     paymentMethod: 'cod',
   });
 
+  // State cho user ID
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+
+  // State cho coupon ID
+  const [selectedCouponId, setSelectedCouponId] = useState<string | null>(null);
+
   // State cho coupon
   const [couponCode, setCouponCode] = useState('');
   const [discountAmount, setDiscountAmount] = useState(0);
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [isProfileLoading, setIsProfileLoading] = useState(true); // New state
+  const [isDeliveryInfoLoading, setIsDeliveryInfoLoading] = useState(false); // Default false if not used
   const [couponMessage, setCouponMessage] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
   const [availableCoupons, setAvailableCoupons] = useState<any[]>([]);
 
@@ -95,6 +106,20 @@ export default function ShopPage() {
       }
     };
     loadCoupons();
+  }, []);
+
+  // Lấy User ID từ localStorage (không tự động điền form)
+  useEffect(() => {
+    const userStr = localStorage.getItem('user');
+    if (userStr) {
+      try {
+        const user = JSON.parse(userStr);
+        setCurrentUserId(user.id);
+      } catch (e) {
+        console.error('Dữ liệu user không hợp lệ');
+      }
+    }
+    setIsProfileLoading(false);
   }, []);
 
   // Tính toán thông tin giỏ hàng trước để dùng trong applyCoupon
@@ -241,41 +266,84 @@ export default function ShopPage() {
     setSelectedProduct(null);
   };
 
-  // Hàm xử lý submit checkout
+  // Bước 1: Mở Modal xác nhận
   const handleCheckoutSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
+    setShowConfirm(true);
+  };
+
+  // Bước 2: Gọi API createOrder sau khi nhấn xác nhận trên Modal
+  const confirmOrder = async () => {
+    setShowConfirm(false);
+
+    let userId = currentUserId;
+
+    if (!userId) {
+      try {
+        const userStr = localStorage.getItem('user');
+        if (userStr) {
+          const user = JSON.parse(userStr);
+          userId = user.id;
+          setCurrentUserId(user.id);
+        }
+      } catch (err) {
+        console.error("Xác thực người dùng thất bại:", err);
+      }
+    }
+
+    if (!userId) {
+      alert('Vui lòng đăng nhập để thực hiện đặt hàng.');
+      return;
+    }
+
     setIsOrderLoading(true);
 
-    const orderPayload = {
-      customer: checkoutData,
-      paymentMethod: checkoutData.paymentMethod === 'bank' ? 'Chuyển khoản ngân hàng' : 'Thanh toán khi nhận hàng (COD)',
-      items: cart,
-      subtotal: totalAmountStr,
-      discount: `-${discountAmount.toLocaleString('vi-VN')}đ`,
-      total: (totalAmountNum - discountAmount).toLocaleString('vi-VN') + 'đ',
-      createdAt: new Date().toISOString(),
-    };
-
     try {
-      await fetch('https://67280f55270bd0277ef94c99.mockapi.io/orders', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(orderPayload),
-      });
+      // Map đúng payload theo yêu cầu của BE API
+      const payload = {
+        userId: userId,
+        customerName: checkoutData.name,
+        customerPhone: checkoutData.phone,
+        customerAddress: checkoutData.address,
+        couponId: selectedCouponId || "",
+        deliveryPhone: checkoutData.phone,
+        deliveryAddress: checkoutData.address,
+        deliveryNote: checkoutData.note,
+        items: cart.map(item => ({
+          productId: item.product.id,
+          quantity: item.quantity
+        }))
+      };
+      console.log("PAYLOAD SEND TO BE:", payload);
+      await orderService.createOrder(payload);
 
+      // Xử lý thành công: clear cart, reset form, hiện success modal
       setCart([]);
+      setSelectedCouponId(null);
+      setCouponCode('');
+      setDiscountAmount(0);
+      setCheckoutData({
+        name: '',
+        phone: '',
+        address: '',
+        note: '',
+        paymentMethod: 'cod',
+      });
       setCurrentView('shop');
       setIsCartOpen(false);
       setIsOrderSuccessModalOpen(true);
-    } catch (error) {
-      alert('Có lỗi xảy ra, vui lòng thử lại sau.');
+    } catch (error: any) {
+      alert(error.message || 'Đặt hàng thất bại, vui lòng kiểm tra lại.');
+      console.error('Create order error:', error);
     } finally {
       setIsOrderLoading(false);
     }
   };
 
-  // Hiển thị trạng thái loading hoặc lỗi
-  if (loading) return <div className="text-center py-20">Đang tải sản phẩm...</div>;
+  // Hiển thị trạng thái loading hoặc lỗi cho toàn bộ trang
+  if (loading || isProfileLoading || isDeliveryInfoLoading) {
+    return <div className="text-center py-20">Đang tải dữ liệu...</div>;
+  }
   if (error) return <div className="text-center py-20 text-red-500">Lỗi: {error}</div>;
 
   // Nếu đang ở view thanh toán, render giao diện thanh toán riêng
@@ -297,6 +365,10 @@ export default function ShopPage() {
         setCheckoutData={setCheckoutData}
         onBack={() => setCurrentView('shop')}
         onSubmit={handleCheckoutSubmit}
+        showConfirm={showConfirm}
+        setShowConfirm={setShowConfirm}
+        onConfirmOrder={confirmOrder}
+        isFormLoading={isProfileLoading || isDeliveryInfoLoading} // Pass overall loading state
         isLoading={isOrderLoading}
       />
     );
