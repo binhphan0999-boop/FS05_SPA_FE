@@ -9,6 +9,7 @@ export interface BackendService {
   categoryId: string | null;
   imageUrl: string | null;
   isActive: boolean;
+  isFeatured: boolean;
   category: {
     id: string;
     name: string;
@@ -23,4 +24,5 @@ export interface Service {
   category: string;
   image: string;
   description: string;
+  isFeatured: boolean;
 }
