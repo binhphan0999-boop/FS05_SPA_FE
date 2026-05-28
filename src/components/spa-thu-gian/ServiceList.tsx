@@ -11,7 +11,11 @@ export default function ServiceList() {
 
   useEffect(() => {
     serviceApiService.getServices()
-      .then(setServices)
+      .then((list) => {
+        // Featured services lên đầu
+        const sorted = [...list].sort((a, b) => Number(b.isFeatured) - Number(a.isFeatured));
+        setServices(sorted);
+      })
       .catch(() => setError(true))
       .finally(() => setLoading(false));
   }, []);
@@ -38,8 +42,14 @@ export default function ServiceList() {
           {services.map((service) => (
             <div
               key={service.id}
-              className="bg-white overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300"
+              className="relative bg-white overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300"
             >
+              {service.isFeatured && (
+                <div className="absolute top-[12px] left-[12px] z-10 flex items-center gap-[6px] bg-gradient-to-r from-[#e53935] to-[#ff6b35] text-white px-[12px] py-[6px] rounded-full text-[12px] font-[700] uppercase tracking-wider shadow-md animate-pulse">
+                  <i className="fa fa-fire" aria-hidden="true"></i>
+                  <span>HOT</span>
+                </div>
+              )}
               <div className="overflow-hidden h-[250px]">
                 <img
                   src={service.image}
@@ -53,6 +63,11 @@ export default function ServiceList() {
                 </span>
                 <h3 className="text-[22px] font-[600] mt-[8px] mb-[10px] leading-[1.3]">
                   {service.name}
+                  {service.isFeatured && (
+                    <span className="ml-[8px] text-[14px] text-[#e53935] font-[600]">
+                      ★ Được ưa chuộng
+                    </span>
+                  )}
                 </h3>
                 <p className="text-[14px] text-[#555555] leading-[1.6] mb-[15px] line-clamp-3">
                   {service.description}
