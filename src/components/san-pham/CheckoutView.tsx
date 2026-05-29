@@ -94,7 +94,7 @@ export default function CheckoutView({
               <div className="coupon-input-group">
                 <input 
                   type="text" 
-                  placeholder="Nhập mã ưu đãi (Thử: MONA10)" 
+                  placeholder="Nhập mã ưu đãi " 
                   value={couponCode}
                   onChange={(e) => setCouponCode(e.target.value)}
                 />

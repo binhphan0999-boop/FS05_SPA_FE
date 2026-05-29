@@ -160,12 +160,14 @@ export default function ShopPage() {
 
     if (validation.isValid) {
       setDiscountAmount(validation.discountAmount);
+      setSelectedCouponId(foundCoupon.id);
       setCouponMessage({
         text: validation.message,
         type: 'success'
       });
     } else {
       setDiscountAmount(0);
+      setSelectedCouponId(null);
       setCouponMessage({
         text: validation.message,
         type: 'error'
@@ -357,6 +359,8 @@ export default function ShopPage() {
         couponCode={couponCode}
         setCouponCode={(code) => {
           setCouponCode(code);
+          setDiscountAmount(0);
+          setSelectedCouponId(null);
           setCouponMessage(null); // Xóa thông báo khi người dùng nhập mã mới
         }}
         couponMessage={couponMessage}
