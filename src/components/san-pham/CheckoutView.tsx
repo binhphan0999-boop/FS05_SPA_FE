@@ -1,4 +1,5 @@
 import type { CartItem, CheckoutData } from '../../types/product.type';
+import { useEffect, useState } from 'react';
 import CouponList from './CouponList';
 import ConfirmModal from './ConfirmModal';
 
@@ -41,6 +42,101 @@ export default function CheckoutView({
   isFormLoading, // Destructure new prop
   isLoading,
 }: CheckoutViewProps) {
+  const [phoneError, setPhoneError] = useState<string | null>(null);
+  const [nameError, setNameError] = useState<string | null>(null);
+  const [addressError, setAddressError] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Lấy thông tin người dùng từ localStorage để tự động điền vào form khi vào trang
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      try {
+        const user = JSON.parse(storedUser);
+        const name = user.fullName || 
+          `${user.lastName || ''} ${user.middleName || ''} ${ user.firstName || ''}`
+            .replace(/\s+/g, ' ')
+            .trim();
+        
+        setCheckoutData({
+          ...checkoutData,
+          name: checkoutData.name || name,
+          phone: checkoutData.phone || user.phone || '',
+          address: checkoutData.address || user.address || '',
+        });
+        // Validate phone number if it's pre-filled
+        if (user.phone && !/^0[35789]\d{8}$/.test(user.phone)) {
+          setPhoneError('Số điện thoại không đúng định dạng (ví dụ: 0901234567)');
+        } else {
+          setPhoneError(null);
+        }
+      } catch (error) {
+        console.error("Lỗi khi lấy thông tin người dùng từ localStorage:", error);
+      }
+    }
+  }, []); // Hook này chỉ chạy 1 lần duy nhất khi component được hiển thị
+
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newPhone = e.target.value;
+    setCheckoutData({ ...checkoutData, phone: newPhone });
+    // Validate phone number
+    if (!newPhone.trim()) {
+      setPhoneError('Số điện thoại không được để trống');
+    } else if (!/^0[35789]\d{8}$/.test(newPhone)) { // Regex cho SĐT Việt Nam 10 số, bắt đầu bằng 0 và đầu số di động phổ biến
+      setPhoneError('Số điện thoại không đúng định dạng (ví dụ: 0901234567)');
+    } else {
+      setPhoneError(null);
+    }
+  };
+
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setCheckoutData({ ...checkoutData, name: value });
+    if (value.trim()) setNameError(null);
+  };
+
+  const handleAddressChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const value = e.target.value;
+    setCheckoutData({ ...checkoutData, address: value });
+    if (value.trim()) setAddressError(null);
+  };
+
+  const handleFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault(); // Ngăn chặn hành vi submit mặc định của form
+    let isValid = true;
+
+    // Kiểm tra lại định dạng số điện thoại trước khi submit cuối cùng
+    if (!checkoutData.phone.trim()) {
+      setPhoneError('Số điện thoại không được để trống');
+      isValid = false;
+    } else if (!/^0[35789]\d{8}$/.test(checkoutData.phone)) {
+      setPhoneError('Số điện thoại không đúng định dạng (ví dụ: 0901234567)');
+      isValid = false;
+    } else {
+      setPhoneError(null);
+    }
+
+    // Kiểm tra Họ tên
+    if (!checkoutData.name.trim()) {
+      setNameError('Vui lòng nhập họ và tên');
+      isValid = false;
+    } else {
+      setNameError(null);
+    }
+
+    // Kiểm tra Địa chỉ
+    if (!checkoutData.address.trim()) {
+      setAddressError('Vui lòng nhập địa chỉ nhận hàng');
+      isValid = false;
+    } else {
+      setAddressError(null);
+    }
+
+    // Nếu tất cả các kiểm tra đều hợp lệ, gọi hàm onSubmit của component cha
+    if (isValid) {
+      onSubmit(e);
+    }
+  };
+
   return (
     <div className="checkout-view-container">
       <div className="checkout-container-inner">
@@ -113,39 +209,39 @@ export default function CheckoutView({
               />
             </div>
 
-            <div className="checkout-form">
+            <form id="checkout-form" className="checkout-form" onSubmit={handleFormSubmit}>
               <h3>Thông tin giao hàng</h3>
               <div className="form-group">
                 <label>Họ và tên</label>
                 <input 
                   type="text" 
-                  required 
                   value={checkoutData.name} 
-                  onChange={e => setCheckoutData({...checkoutData, name: e.target.value})} 
+                  onChange={handleNameChange} 
                   disabled={isFormLoading} // Disable when loading
                   placeholder="Nguyễn Văn A" 
                 />
+                {nameError && <div className="error-message" style={{ color: '#d93025', fontSize: '12px', marginTop: '5px' }}>{nameError}</div>}
               </div>
               <div className="form-group">
                 <label>Số điện thoại</label>
                 <input 
                   type="tel" 
-                  required 
                   value={checkoutData.phone} 
-                  onChange={e => setCheckoutData({...checkoutData, phone: e.target.value})} 
+                  onChange={handlePhoneChange} 
                   disabled={isFormLoading} // Disable when loading
                   placeholder="090xxxxxxx" 
                 />
+                {phoneError && <div className="error-message" style={{ color: '#d93025', fontSize: '12px', marginTop: '5px' }}>{phoneError}</div>}
               </div>
               <div className="form-group">
                 <label>Địa chỉ nhận hàng</label>
                 <textarea 
-                  required 
                   value={checkoutData.address} 
-                  onChange={e => setCheckoutData({...checkoutData, address: e.target.value})} 
+                  onChange={handleAddressChange} 
                   placeholder="Số nhà, tên đường, phường/xã..." 
                   rows={3} 
                 />
+                {addressError && <div className="error-message" style={{ color: '#d93025', fontSize: '12px', marginTop: '5px' }}>{addressError}</div>}
               </div>
               <div className="form-group">
                 <label>Ghi chú đơn hàng</label>
@@ -156,7 +252,7 @@ export default function CheckoutView({
                   placeholder="Ví dụ: Giao giờ hành chính..." 
                 />
               </div>
-            </div>
+            </form>
           </div>
 
           {/* Cột phải: QR Code */}
@@ -213,11 +309,12 @@ export default function CheckoutView({
             )}
 
             <button 
-              onClick={onSubmit} 
+              form="checkout-form"
+              type="submit" 
               className="checkout-btn" 
-              disabled={isLoading}
+              disabled={isLoading || isFormLoading}
             >
-              {isLoading ? 'ĐANG XỬ LÝ...' : 'XÁC NHẬN ĐẶT HÀNG'}
+              {isLoading || isFormLoading ? 'ĐANG XỬ LÝ...' : 'XÁC NHẬN ĐẶT HÀNG'}
             </button>
           </div>
         </div>
@@ -226,7 +323,35 @@ export default function CheckoutView({
       <ConfirmModal
         isOpen={showConfirm}
         title="XÁC NHẬN THÔNG TIN GIAO HÀNG"
-        message={`Họ tên: ${checkoutData.name}\nSố điện thoại: ${checkoutData.phone}\nĐịa chỉ: ${checkoutData.address}\nGhi chú: ${checkoutData.note || 'Không có'}`}
+        message={
+          <div className="confirm-info-summary" style={{ background: '#f8f9fa', padding: '20px', borderRadius: '12px', border: '1px solid #e9ecef' }}>
+            <p style={{ color: '#666', marginBottom: '15px', fontStyle: 'italic', fontSize: '0.9rem' }}>Vui lòng kiểm tra kỹ thông tin trước khi xác nhận đặt hàng:</p>
+            <div className="confirm-info-row" style={{ display: 'flex', marginBottom: '12px', alignItems: 'flex-start' }}>
+              <span className="confirm-label" style={{ minWidth: '140px', fontWeight: 600, color: '#444' }}>
+                <i className="fa fa-user" style={{ marginRight: '8px', color: '#fca311' }}></i>Người nhận:
+              </span>
+              <span className="confirm-value" style={{ color: '#14213d', fontWeight: 700 }}>{checkoutData.name}</span>
+            </div>
+            <div className="confirm-info-row" style={{ display: 'flex', marginBottom: '12px', alignItems: 'flex-start' }}>
+              <span className="confirm-label" style={{ minWidth: '140px', fontWeight: 600, color: '#444' }}>
+                <i className="fa fa-phone" style={{ marginRight: '8px', color: '#fca311' }}></i>Số điện thoại:
+              </span>
+              <span className="confirm-value" style={{ color: '#14213d', fontWeight: 700 }}>{checkoutData.phone}</span>
+            </div>
+            <div className="confirm-info-row" style={{ display: 'flex', marginBottom: '12px', alignItems: 'flex-start' }}>
+              <span className="confirm-label" style={{ minWidth: '140px', fontWeight: 600, color: '#444' }}>
+                <i className="fa fa-map-marker" style={{ marginRight: '8px', color: '#fca311' }}></i>Địa chỉ:
+              </span>
+              <span className="confirm-value" style={{ color: '#14213d', lineHeight: '1.4' }}>{checkoutData.address}</span>
+            </div>
+            <div className="confirm-info-row" style={{ display: 'flex', alignItems: 'flex-start' }}>
+              <span className="confirm-label" style={{ minWidth: '140px', fontWeight: 600, color: '#444' }}>
+                <i className="fa fa-sticky-note" style={{ marginRight: '8px', color: '#fca311' }}></i>Ghi chú:
+              </span>
+              <span className="confirm-value" style={{ color: '#666', fontStyle: checkoutData.note ? 'normal' : 'italic' }}>{checkoutData.note || 'Không có ghi chú'}</span>
+            </div>
+          </div>
+        }
         onCancel={() => setShowConfirm(false)}
         onConfirm={onConfirmOrder}
         confirmText="XÁC NHẬN"
